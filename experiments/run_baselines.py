@@ -18,8 +18,9 @@ from visualization.plot_results import plot_results
 RNG_SEED  = 42
 N_TASKS   = 1000
 N_NODES   = 15
-CSV_DIR   = "../results/csv"
-PLOTS_DIR = "../results/plots"
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CSV_DIR   = os.path.join(_PROJECT_ROOT, "results", "csv")
+PLOTS_DIR = os.path.join(_PROJECT_ROOT, "results", "plots")
 
 
 def run_baselines() -> tuple:
@@ -95,4 +96,3 @@ def run_baselines() -> tuple:
 
 if __name__ == "__main__":
     run_baselines()
-

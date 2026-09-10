@@ -64,10 +64,10 @@ def run_simulation(
             "workload_size":   w_size,
             "node_id":         chosen_node,
             "completion_time": comp_time,
+            "finish_time":      t_arr + comp_time,
             "failed":          failed_flag,
             "retries":         attempts,
         })
 
     tasks_per_node = [nd["tasks_handled"] for nd in nodes]
     return pd.DataFrame(results), tasks_per_node
-

@@ -6,9 +6,11 @@ _PROJECT_ROOT        = os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 DEFAULT_DATASET_PATH = os.path.join(_PROJECT_ROOT, "data", "alibaba_trace", "batch_task.csv")
 
 def load_tasks_from_dataset(
-    num_tasks:    int = 1000,
-    dataset_path: str = DEFAULT_DATASET_PATH,
-    rng:          np.random.Generator = None,
+    num_tasks:      int = 1000,
+    dataset_path:   str = DEFAULT_DATASET_PATH,
+    rng:            np.random.Generator = None,
+    arrival_window: float = 600.0,
+    workload_scale: float = 1.0,
 ) -> pd.DataFrame:
     if rng is None:
         rng = np.random.default_rng(42)
@@ -64,12 +66,11 @@ def load_tasks_from_dataset(
           f"mean={df_sample['plan_cpu'].mean():.1f}  "
           f"max={df_sample['plan_cpu'].max():.1f}")
  
-    TARGET_WINDOW = 600.0
     raw_times  = df_sample["start_time"].values.astype(float)
     t_min      = raw_times.min()
     t_span     = raw_times.max() - t_min
     if t_span > 0:
-        arrival_times = (raw_times - t_min) / t_span * TARGET_WINDOW
+        arrival_times = (raw_times - t_min) / t_span * arrival_window
     else:
         arrival_times = raw_times - t_min
     arrival_times = pd.Series(arrival_times)
@@ -79,6 +80,7 @@ def load_tasks_from_dataset(
     log_min   = np.log(5.0)
     log_max   = np.log(1000.0)
     workload_size = (10.0 + 90.0 * (log_cpu - log_min) / (log_max - log_min))
+    workload_size = workload_size * workload_scale
     workload_size = workload_size.clip(10.0, 100.0).round(2)
  
     result = pd.DataFrame({
@@ -104,6 +106,15 @@ def load_tasks_from_dataset(
 
 
 def generate_workload(n_tasks: int = 1000, rng: np.random.Generator = None) -> pd.DataFrame:
+    return generate_synthetic_workload(n_tasks=n_tasks, rng=rng)
+
+
+def generate_synthetic_workload(
+    n_tasks: int = 1000,
+    rng: np.random.Generator = None,
+    arrival_window: float = 600.0,
+    workload_scale: float = 1.0,
+) -> pd.DataFrame:
     if rng is None:
         rng = np.random.default_rng(42)
  
@@ -111,9 +122,14 @@ def generate_workload(n_tasks: int = 1000, rng: np.random.Generator = None) -> p
  
     inter_arrivals = rng.exponential(scale=2.5, size=n_tasks)
     arrival_times  = np.cumsum(inter_arrivals)
+    raw_span = arrival_times.max() - arrival_times.min()
+    if raw_span > 0:
+        arrival_times = (arrival_times - arrival_times.min()) / raw_span * arrival_window
+    else:
+        arrival_times = arrival_times - arrival_times.min()
  
     raw_sizes   = rng.lognormal(mean=3.5, sigma=0.6, size=n_tasks)
-    workload_sz = np.clip(raw_sizes, 10, 100).round(2)
+    workload_sz = np.clip(raw_sizes * workload_scale, 10, 100).round(2)
  
     df = pd.DataFrame({
         "task_id"      : np.arange(n_tasks),
@@ -130,15 +146,20 @@ def generate_workload(n_tasks: int = 1000, rng: np.random.Generator = None) -> p
     return df
 
 def get_workload(
-    num_tasks:    int = 1000,
-    dataset_path: str = DEFAULT_DATASET_PATH,
-    rng:          np.random.Generator = None,
+    num_tasks:      int = 1000,
+    dataset_path:   str = DEFAULT_DATASET_PATH,
+    rng:            np.random.Generator = None,
+    arrival_window: float = 600.0,
+    workload_scale: float = 1.0,
 ) -> pd.DataFrame:
     if os.path.exists(dataset_path):
-        return load_tasks_from_dataset(num_tasks, dataset_path, rng)
+        return load_tasks_from_dataset(
+            num_tasks, dataset_path, rng, arrival_window, workload_scale
+        )
     else:
         print(f"[dataset] batch_task.csv not found at '{dataset_path}'.")
         print(f"[dataset] Falling back to synthetic workload generation.")
-        return generate_workload(num_tasks, rng)
-
+        return generate_synthetic_workload(
+            num_tasks, rng, arrival_window, workload_scale
+        )
 

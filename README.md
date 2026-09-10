@@ -230,7 +230,32 @@ The framework evaluates scheduler performance using:
 | Makespan | Total execution time |
 | Load Variance | Degree of workload balancing |
 | Failure Rate | Fraction of failed executions |
-| Schedule Length Ratio (SLR) | Scheduling efficiency |
+| Schedule Length Ratio (SLR) | Makespan divided by an internal parallel lower bound |
+| SLR Lower Bound | Parallel lower bound used for SLR normalization |
+
+---
+
+# Publisher Revision Workflow
+
+This branch includes changes prepared for the BIGAPI publisher review response.
+
+Key reviewer-driven updates:
+
+- Fitness now optimizes all six stated objectives: average completion time, P95 latency, makespan, load variance, failure rate, and SLR.
+- Policy weights are constrained to `[0, 5]` so queue, latency, failure, and execution-cost terms cannot become accidental rewards.
+- Makespan is measured from first task arrival to last task finish.
+- SLR is normalized by a parallel lower bound instead of the previous serial sum of fastest task times.
+- MECT normalization constants are generated from one baseline metrics object and reused by the experiments.
+- Sensitivity and robustness scripts were added for reviewer-requested validation.
+
+Revision documents:
+
+```text
+docs/BIGAPI_REVIEW_REVISION_PLAN.md
+docs/UPLOAD_CHECKLIST.md
+```
+
+Important: the editable manuscript source is not present in this repository. The uploaded PDF can be reviewed, but the final journal Word file should be produced from the real `.docx` or `.tex` source.
 
 ---
 
@@ -285,8 +310,19 @@ cd Dynamic-Scheduling-
 Install the required dependencies:
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+pip install pytest
 ```
+
+For exact manuscript reproduction, place the Alibaba Cluster Trace file here:
+
+```text
+data/alibaba_trace/batch_task.csv
+```
+
+If this file is absent, the code falls back to synthetic workload generation.
 
 ---
 
@@ -308,6 +344,25 @@ Run the hybrid optimization experiment:
 
 ```bash
 python experiments/hybrid_experiment.py
+```
+
+Run coefficient sensitivity analysis:
+
+```bash
+python experiments/sensitivity_analysis.py --tasks 1000 --pop-size 20 --iterations 50
+```
+
+Run robustness checks across samples, arrival windows, workload intensity, and cluster size:
+
+```bash
+python experiments/robustness_experiment.py --tasks 1000 --reoptimize-de --pop-size 20 --iterations 50
+```
+
+Run tests:
+
+```bash
+pytest
+python -m compileall evaluation simulation schedulers optimizers experiments
 ```
 
 ---

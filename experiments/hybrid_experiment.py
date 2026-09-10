@@ -25,7 +25,7 @@ from optimizers.ga_optimizer    import GeneticAlgorithm
 from optimizers.pso_optimizer   import PSO
 from optimizers.de_optimizer    import DifferentialEvolution
 from optimizers.hybrid_cce_optimizer import HybridCCEOptimizer
-from evaluation.fitness import evaluate_weights, set_baselines, set_workload_cache, N_WEIGHTS
+from evaluation.fitness import evaluate_weights, set_baselines_from_metrics, set_workload_cache, N_WEIGHTS
 
 RNG_SEED  = 42
 N_TASKS   = 1000
@@ -84,16 +84,13 @@ def run_hybrid_experiment():
     mect_sched        = MECTScheduler()
     mect_df, mect_tpn = run_simulation(workload, mect_sched, base_nodes, rng=rng)
     mect_m            = compute_metrics(mect_df, mect_tpn, base_nodes)
-    set_baselines(
-        avg_ct        = mect_m["avg_completion_time"],
-        load_variance = mect_m["load_variance"],
-        failure_rate  = max(mect_m["failure_rate"], 1e-6),
-        makespan      = mect_m["makespan"],
-    )
+    set_baselines_from_metrics(mect_m)
     print(f"[setup] Baselines — AvgCT={mect_m['avg_completion_time']:.4f} | "
+          f"P95={mect_m['p95_latency']:.4f} | "
           f"LoadVar={mect_m['load_variance']:.2f} | "
           f"FailRate={mect_m['failure_rate']:.4f} | "
-          f"Makespan={mect_m['makespan']:.4f}")
+          f"Makespan={mect_m['makespan']:.4f} | "
+          f"SLR={mect_m['slr']:.4f}")
     
     optimizers = {
         "GA"        : GeneticAlgorithm(seed=RNG_SEED),
@@ -172,7 +169,7 @@ def run_hybrid_experiment():
             "time_sec"         : opt_results[opt_name]["time"],
         })
     
-    print(f"\n  SLR improvement over Round Robin (paper target: >78.2%):")
+    print(f"\n  SLR improvement over Round Robin (not compared to external SLR definitions):")
     for opt_name in ["GA", "PSO", "DE", "Hybrid CCE"]:
         m       = policy_metrics[f"Policy-{opt_name}"]
         slr_imp = (rr_slr - m["slr"]) / rr_slr * 100 if rr_slr else 0
@@ -317,7 +314,7 @@ def _generate_plots(opt_results, all_metrics, baseline_metrics,
     ax.set_xticklabels(short_names, rotation=20, ha="right", fontsize=10)
     ax.set_ylabel("Scheduling Length Ratio (SLR)", fontsize=11)
     ax.set_title("SLR Comparison — All Schedulers\n"
-                 "(Lower is better; Li & Chen 2024 target: SLR < 13.7 relative)",
+                 "(Lower is better; normalized by the internal parallel lower bound)",
                  fontsize=12, fontweight="bold")
     ax.grid(axis="y", linestyle="--", alpha=0.4)
     ax.spines["top"].set_visible(False)
@@ -332,14 +329,14 @@ def _generate_plots(opt_results, all_metrics, baseline_metrics,
  
     fig5, ax = plt.subplots(figsize=(10, 5))
     im = ax.imshow(weight_mat, cmap="RdYlGn", aspect="auto",
-                   vmin=-5, vmax=5)
+                   vmin=0, vmax=5)
     plt.colorbar(im, ax=ax, label="Weight Value")
     ax.set_xticks(range(6))
     ax.set_xticklabels(WEIGHT_LABELS, fontsize=11)
     ax.set_yticks(range(len(opt_names)))
     ax.set_yticklabels(opt_names, fontsize=11)
     ax.set_title("Learned Weight Vectors — All Optimizers\n"
-                 "(Green = high positive, Red = high negative)",
+                 "(Nonnegative weights; higher values strengthen the signed feature term)",
                  fontsize=12, fontweight="bold")
     for i in range(len(opt_names)):
         for j in range(6):

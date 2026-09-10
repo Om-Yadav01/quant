@@ -10,13 +10,18 @@ from simulation.simulation_runner import run_simulation
 from schedulers.policy_scheduler  import PolicyScheduler
 from evaluation.metrics           import compute_metrics
 
-ALPHA = 0.35  # avg_completion_time  (primary — mean latency)
-BETA  = 0.15  # load_variance        (load balance)
-GAMMA = 0.20  # failure_rate         (reliability — increased from 0.15)
-DELTA = 0.30  # makespan             (slightly reduced to give failure more weight)
-EPS   = 1e-9 
+DEFAULT_FITNESS_WEIGHTS = {
+    "avg_completion_time": 0.25,
+    "p95_latency":         0.20,
+    "makespan":            0.20,
+    "load_variance":       0.10,
+    "failure_rate":        0.15,
+    "slr":                 0.10,
+}
+FITNESS_WEIGHTS = DEFAULT_FITNESS_WEIGHTS.copy()
+EPS = 1e-9
 
-W_MIN = -5.0
+W_MIN =  0.0
 W_MAX =  5.0
 N_WEIGHTS = 6
 
@@ -25,17 +30,52 @@ N_NODES  = 15
 RNG_SEED = 42
 
 _BASELINE = {
-    "avg_completion_time": 5.0,    
-    "load_variance"      : 1000.0, 
-    "failure_rate"       : 0.006,  
-    "makespan"           : 10.0,   
+    "avg_completion_time": 1.0,
+    "p95_latency"        : 1.0,
+    "makespan"           : 1.0,
+    "load_variance"      : 1.0,
+    "failure_rate"       : 1.0,
+    "slr"                : 1.0,
 }
 
 def set_baselines(avg_ct: float, load_variance: float,
-                  failure_rate: float, makespan: float) -> None:
+                  failure_rate: float, makespan: float,
+                  p95_latency: float = None, slr: float = None) -> None:
     _BASELINE["avg_completion_time"] = max(avg_ct,       1e-9)
+    if p95_latency is not None:
+        _BASELINE["p95_latency"] = max(p95_latency, 1e-9)
     _BASELINE["makespan"]            = max(makespan,     1e-9)
+    _BASELINE["load_variance"]       = max(load_variance, 1e-9)
     _BASELINE["failure_rate"]        = max(failure_rate, 1e-9)
+    if slr is not None:
+        _BASELINE["slr"] = max(slr, 1e-9)
+
+
+def set_baselines_from_metrics(metrics: dict) -> None:
+    set_baselines(
+        avg_ct=metrics["avg_completion_time"],
+        p95_latency=metrics["p95_latency"],
+        makespan=metrics["makespan"],
+        load_variance=metrics["load_variance"],
+        failure_rate=max(metrics["failure_rate"], EPS),
+        slr=metrics["slr"],
+    )
+
+
+def set_fitness_weights(weights: dict) -> None:
+    missing = set(FITNESS_WEIGHTS) - set(weights)
+    extra = set(weights) - set(FITNESS_WEIGHTS)
+    if missing or extra:
+        raise ValueError(f"Fitness weight keys mismatch. Missing={missing}, extra={extra}")
+
+    total = sum(float(v) for v in weights.values())
+    if total <= 0:
+        raise ValueError("Fitness weights must sum to a positive value.")
+
+    for key, value in weights.items():
+        if value < 0:
+            raise ValueError(f"Fitness weight for {key} must be nonnegative.")
+        FITNESS_WEIGHTS[key] = float(value) / total
 
 class WorkloadCache:
     def __init__(self):
@@ -75,20 +115,15 @@ def evaluate_weights(weights) -> float:
  
         metrics = compute_metrics(df, tasks_per_node, base_nodes)
  
-        lat_norm  = metrics["avg_completion_time"] / max(_BASELINE["avg_completion_time"], EPS)
-        var_norm  = metrics["load_variance"]        / max(_BASELINE["load_variance"],       EPS)
-        fail_norm = metrics["failure_rate"]         / max(_BASELINE["failure_rate"],        EPS)
-        ms_norm   = metrics["makespan"]             / max(_BASELINE["makespan"],            EPS)
+        norm = {
+            key: metrics[key] / max(_BASELINE[key], EPS)
+            for key in FITNESS_WEIGHTS
+        }
  
-        fitness = (
-            ALPHA * lat_norm
-            + BETA  * var_norm
-            + GAMMA * fail_norm
-            + DELTA * ms_norm
-        )
+        fitness = sum(FITNESS_WEIGHTS[key] * norm[key] for key in FITNESS_WEIGHTS)
         
-        if fail_norm > 1.0:
-            fitness += 0.10 * (fail_norm - 1.0)
+        if norm["failure_rate"] > 1.0:
+            fitness += 0.05 * (norm["failure_rate"] - 1.0)
  
         return float(fitness)
  

@@ -17,7 +17,7 @@ from evaluation.metrics           import compute_metrics, build_metrics_table
 from optimizers.ga_optimizer    import GeneticAlgorithm
 from optimizers.pso_optimizer   import PSO
 from optimizers.de_optimizer    import DifferentialEvolution
-from evaluation.fitness         import evaluate_weights, N_WEIGHTS,set_baselines,set_workload_cache
+from evaluation.fitness         import evaluate_weights, N_WEIGHTS, set_baselines_from_metrics, set_workload_cache
 
 import matplotlib
 matplotlib.use("Agg")
@@ -58,16 +58,13 @@ def run_optimizer_experiment():
     mect_sched              = MECTScheduler()
     mect_df, mect_tpn       = run_simulation(workload, mect_sched, base_nodes, rng=rng)
     mect_metrics            = compute_metrics(mect_df, mect_tpn, base_nodes)
-    set_baselines(
-        avg_ct       = mect_metrics["avg_completion_time"],
-        load_variance= mect_metrics["load_variance"],
-        failure_rate = max(mect_metrics["failure_rate"], 1e-6),
-        makespan     = mect_metrics["makespan"],
-    )
+    set_baselines_from_metrics(mect_metrics)
     print(f"[setup] Baselines — AvgCT={mect_metrics['avg_completion_time']:.4f} | "
+          f"P95={mect_metrics['p95_latency']:.4f} | "
           f"LoadVar={mect_metrics['load_variance']:.2f} | "
           f"FailRate={mect_metrics['failure_rate']:.4f} | "
-          f"Makespan={mect_metrics['makespan']:.4f}")
+          f"Makespan={mect_metrics['makespan']:.4f} | "
+          f"SLR={mect_metrics['slr']:.4f}")
     
     optimizers = {
         "GA" : GeneticAlgorithm(seed=RNG_SEED),
@@ -146,7 +143,7 @@ def run_optimizer_experiment():
               f"{slr_imp:>+12.2f}%")
         
     rr_slr_val = baseline_metrics["Round Robin"]["slr"]
-    print(f"\n  SLR improvement over Round Robin (target: >78.2%):")
+    print(f"\n  SLR improvement over Round Robin (internal definition only):")
     for name in ["GA", "PSO", "DE"]:
         m       = policy_metrics[f"Policy-{name}"]
         slr_imp = (rr_slr_val - m["slr"]) / rr_slr_val * 100 if rr_slr_val else 0
@@ -277,4 +274,3 @@ def _plot_results(opt_results, all_metrics, baseline_metrics,
     
 if __name__ == "__main__":
     run_optimizer_experiment()
- 
