@@ -253,6 +253,8 @@ Revision documents:
 ```text
 docs/BIGAPI_REVIEW_REVISION_PLAN.md
 docs/UPLOAD_CHECKLIST.md
+docs/REAL_DATA_RESULTS_SUMMARY.md
+docs/RESPONSE_TO_REVIEWERS_DRAFT.md
 ```
 
 Important: the editable manuscript source is not present in this repository. The uploaded PDF can be reviewed, but the final journal Word file should be produced from the real `.docx` or `.tex` source.
@@ -320,6 +322,12 @@ For exact manuscript reproduction, place the Alibaba Cluster Trace file here:
 
 ```text
 data/alibaba_trace/batch_task.csv
+```
+
+If you do not already have the file, download and verify the official Alibaba `batch_task.tar.gz` archive:
+
+```bash
+python scripts/download_alibaba_batch_task.py
 ```
 
 If this file is absent, the code falls back to synthetic workload generation.

@@ -7,12 +7,13 @@ Scope note: the attached PDF was reviewed as source material only. The repositor
 | Area | Status | Repository support |
 | --- | --- | --- |
 | Local environment | Done | `.venv` created locally; setup commands added to `README.md` |
+| Alibaba trace data | Done locally | `batch_task.tar.gz` downloaded from the official Alibaba trace URL and checksum verified; ignored by Git because of size |
 | Six-objective fitness | Done | `evaluation/fitness.py` now optimizes AvgCT, P95, makespan, load variance, failure rate, and SLR |
 | Penalty-weight sign issue | Done | Optimizer search bounds changed from `[-5, 5]` to `[0, 5]` |
 | SLR definition | Done | `evaluation/metrics.py` now uses a parallel lower bound and reports `slr_lower_bound` |
 | Baseline consistency | Done | Experiments now call `set_baselines_from_metrics()` and print all normalization constants |
-| Robustness testing | Done | `experiments/robustness_experiment.py` added |
-| Coefficient sensitivity | Done | `experiments/sensitivity_analysis.py` added |
+| Robustness testing | Done | `experiments/robustness_experiment.py` added and run on real trace data |
+| Coefficient sensitivity | Done | `experiments/sensitivity_analysis.py` added and run on real trace data |
 | Editable manuscript/Word upload | Blocked until source file is supplied | Only the PDF is available; do not convert blindly for final submission |
 | English proofreading | Pending human/service proofread | Recommended by reviewers and editor |
 | ORCID | Pending author input | Add at least one author ORCID in the manuscript metadata/title page |
@@ -44,7 +45,11 @@ Scope note: the attached PDF was reviewed as source material only. The repositor
 | SLR denominator invalid under parallelism | SLR now uses the ratio between observed schedule length and an internal parallel lower bound, not the sum of fastest serial execution times. |
 | Invalid comparison with Li and Chen | Remove the claim that the SLR improvement exceeds Li and Chen. Replace it with a qualitative comparison and state that SLR definitions are not directly comparable. |
 | Negative weights reverse penalties | Search bounds are now `[0, 5]`; penalty features remain penalties because the scheduler formula already applies the negative sign. |
-| Robustness over 1,000 sampled records, arrival windows, intensities, clusters | Added `experiments/robustness_experiment.py` to test repeated samples, 300/600/1200 second windows, light/heavy workloads, and different cluster sizes. |
+| Robustness over 1,000 sampled records, arrival windows, intensities, clusters | Added and ran `experiments/robustness_experiment.py` to test repeated samples, 300/600/1200 second windows, light/heavy workloads, and different cluster sizes. Report the results honestly because improvements are not uniform across all scenarios. |
+
+## Real-Data Results
+
+The real Alibaba trace result summary is recorded in `docs/REAL_DATA_RESULTS_SUMMARY.md`. The main defensible claim is that, on the primary 1,000-task Alibaba sample, optimized policies improve average completion time by 14.59-21.27% and P95 latency by 4.06-13.79% relative to MECT. Do not claim universal superiority: robustness tests show regressions under some arrival-window and cluster-size changes.
 
 ## Revised Abstract Draft
 
@@ -101,7 +106,7 @@ Use the journal's required numbered style and renumber the full list sequentiall
 1. Replace Equation (7) with the six-objective fitness function and list the six coefficients exactly as implemented.
 2. Replace Equation (8) with the revised SLR definition using the parallel lower bound.
 3. Remove the numerical comparison claiming superiority over Li and Chen's SLR benchmark unless a directly comparable experiment is added.
-4. Rerun the experiments with the actual Alibaba trace CSV before copying values into the manuscript.
-5. Update every table and figure caption after rerunning because makespan and SLR definitions changed.
+4. Copy final numerical values from `docs/REAL_DATA_RESULTS_SUMMARY.md` and the generated CSV files.
+5. Update every table and figure caption because makespan and SLR definitions changed.
 6. Insert ORCID for at least one author.
 7. Submit the final `.docx` to professional or native English proofreading before upload.

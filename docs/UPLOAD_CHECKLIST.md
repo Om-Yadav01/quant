@@ -14,9 +14,7 @@ pip install -r requirements.txt pytest
 Optional but recommended for exact paper reproduction:
 
 ```bash
-mkdir -p data/alibaba_trace
-# Place Alibaba Cluster Trace 2018 batch_task.csv here:
-# data/alibaba_trace/batch_task.csv
+python scripts/download_alibaba_batch_task.py
 ```
 
 ## 2. Verify Code
@@ -29,7 +27,7 @@ python -m compileall evaluation simulation schedulers optimizers experiments
 
 ## 3. Regenerate Core Results
 
-Run the full optimizer comparison after adding the Alibaba trace CSV:
+Run the full optimizer comparison after adding or downloading the Alibaba trace CSV:
 
 ```bash
 source .venv/bin/activate
