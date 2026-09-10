@@ -257,7 +257,44 @@ docs/REAL_DATA_RESULTS_SUMMARY.md
 docs/RESPONSE_TO_REVIEWERS_DRAFT.md
 ```
 
-Important: the editable manuscript source is not present in this repository. The uploaded PDF can be reviewed, but the final journal Word file should be produced from the real `.docx` or `.tex` source.
+## Submission Ready Package
+
+The final revision package is generated in:
+
+```text
+submission_ready/
+```
+
+It contains:
+
+```text
+Revised_Manuscript.docx
+Response_to_Reviewers.docx
+Cover_Letter.docx
+Author_Metadata_and_Upload_Checklist.docx
+SUBMISSION_PACKAGE_MANIFEST.txt
+BIGAPI_Submission_Package.zip
+figures/
+csv/
+```
+
+To rebuild the package after rerunning experiments:
+
+```bash
+source .venv/bin/activate
+python scripts/build_submission_package.py
+```
+
+Upload sequence for the journal portal:
+
+1. Upload `submission_ready/Revised_Manuscript.docx` as the main article file.
+2. Upload `submission_ready/Response_to_Reviewers.docx` as the reviewer response.
+3. Upload `submission_ready/Cover_Letter.docx` if the portal asks for a cover letter.
+4. Upload the referenced high-resolution figures from `submission_ready/figures/` if requested separately.
+5. Enter at least one verified author ORCID in the portal before final submission.
+6. Review the portal-generated PDF proof before pressing submit.
+
+Author-only item still required: add a verified ORCID for at least one author. The repository does not invent ORCID identifiers.
 
 ---
 

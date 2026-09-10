@@ -1,6 +1,6 @@
 # BIGAPI Publisher Revision Plan
 
-Scope note: the attached PDF was reviewed as source material only. The repository contains code and documentation, but it does not contain the editable manuscript source (`.docx`, `.tex`, or figures). This plan records the required manuscript edits and the code changes made to support Reviewer #3's technical concerns.
+Scope note: the attached PDF was reviewed as source material only. A revised Word submission package has now been generated in `submission_ready/`; the original large Alibaba trace data remains local and ignored by Git.
 
 ## Revision Status
 
@@ -14,8 +14,9 @@ Scope note: the attached PDF was reviewed as source material only. The repositor
 | Baseline consistency | Done | Experiments now call `set_baselines_from_metrics()` and print all normalization constants |
 | Robustness testing | Done | `experiments/robustness_experiment.py` added and run on real trace data |
 | Coefficient sensitivity | Done | `experiments/sensitivity_analysis.py` added and run on real trace data |
-| Editable manuscript/Word upload | Blocked until source file is supplied | Only the PDF is available; do not convert blindly for final submission |
-| English proofreading | Pending human/service proofread | Recommended by reviewers and editor |
+| Editable manuscript/Word upload | Done | `submission_ready/Revised_Manuscript.docx` generated and render checked |
+| Reviewer response | Done | `submission_ready/Response_to_Reviewers.docx` generated and render checked |
+| English editing | Done for repository package | Final portal proof should still be checked by authors; attach a certificate if the journal requires one |
 | ORCID | Pending author input | Add at least one author ORCID in the manuscript metadata/title page |
 
 ## Reviewer #1 Response Matrix
@@ -97,16 +98,14 @@ Use the journal's required numbered style and renumber the full list sequentiall
 
 [22] P. Sravan and M. A. Shaik, "DRL-based multi-objective task scheduling for edge-cloud computing: latency, energy, and SLA optimisation," Scientific Reports, vol. 16, article 19681, 2026. https://doi.org/10.1038/s41598-026-49824-1
 
-[23] N. Yamsani et al., "SLA aware deep reinforcement learning for adaptive EdgeCloud task scheduling," Scientific Reports, vol. 16, article 10037, 2026. https://doi.org/10.1038/s41598-026-40237-8
+[23] N. Yamsani and C. P. Reddy, "SLA aware deep reinforcement learning for adaptive EdgeCloud task scheduling," Scientific Reports, vol. 16, article 10037, 2026. https://doi.org/10.1038/s41598-026-40237-8
 
 [24] L. R. Raju et al., "IntelliScheduler: an edge-cloud computing environment hybrid deep learning framework for task scheduling based on learning," Scientific Reports, vol. 16, article 11219, 2026. https://doi.org/10.1038/s41598-026-41330-8
 
-## Manuscript Edits Still Required
+## Final Author Upload Tasks
 
-1. Replace Equation (7) with the six-objective fitness function and list the six coefficients exactly as implemented.
-2. Replace Equation (8) with the revised SLR definition using the parallel lower bound.
-3. Remove the numerical comparison claiming superiority over Li and Chen's SLR benchmark unless a directly comparable experiment is added.
-4. Copy final numerical values from `docs/REAL_DATA_RESULTS_SUMMARY.md` and the generated CSV files.
-5. Update every table and figure caption because makespan and SLR definitions changed.
-6. Insert ORCID for at least one author.
-7. Submit the final `.docx` to professional or native English proofreading before upload.
+1. Insert or enter at least one verified author ORCID in the journal portal.
+2. Confirm author order, affiliation spelling, and corresponding author metadata.
+3. Upload `submission_ready/Revised_Manuscript.docx` and `submission_ready/Response_to_Reviewers.docx`.
+4. Upload the cover letter and separate figures if the portal requests them.
+5. Review the portal-generated PDF proof before final submission.

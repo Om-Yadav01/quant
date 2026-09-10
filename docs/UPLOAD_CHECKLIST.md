@@ -1,6 +1,6 @@
 # BIGAPI Upload Checklist
 
-Use this checklist after the manuscript source file is available. The repository currently has only the PDF, so final journal formatting and Word upload must be completed from the editable manuscript source.
+Use this checklist to upload the final BIGAPI revision package generated in `submission_ready/`.
 
 ## 1. Prepare Local Environment
 
@@ -77,32 +77,39 @@ results/csv/fitness_weight_sensitivity.csv
 results/csv/robustness_scenarios.csv
 ```
 
-## 5. Update Manuscript
+## 5. Build Submission Documents
 
-1. Replace the abstract with the structured one-paragraph version from `docs/BIGAPI_REVIEW_REVISION_PLAN.md`, after inserting final numerical results.
-2. Rewrite the introduction and related work using the 2025-2026 references listed in the revision plan.
-3. Replace the fitness equation with the six-objective version.
-4. Replace the SLR equation and explain the parallel lower bound.
-5. Remove the direct SLR percentage comparison against Li and Chen unless a comparable experiment is added.
-6. Update all tables using the newly generated CSV files.
-7. Replace all low-resolution figures with regenerated plots from `results/plots`.
-8. Cite every figure and chart in the main text before or near its first appearance.
-9. Insert the notation table and define every symbol used in equations.
-10. Add at least one author ORCID.
-11. Renumber all references sequentially in the journal's required style.
-12. Apply native/professional English proofreading to the final `.docx`.
+Generate the Word package:
+
+```bash
+source .venv/bin/activate
+python scripts/build_submission_package.py
+```
+
+Expected outputs:
+
+```text
+submission_ready/Revised_Manuscript.docx
+submission_ready/Response_to_Reviewers.docx
+submission_ready/Cover_Letter.docx
+submission_ready/Author_Metadata_and_Upload_Checklist.docx
+submission_ready/SUBMISSION_PACKAGE_MANIFEST.txt
+submission_ready/figures/
+submission_ready/csv/
+```
+
+The generated manuscript includes the revised abstract, expanded introduction and related work, six-objective fitness function, corrected SLR definition, notation table, regenerated figures, numbered references, robustness analysis, and rewritten conclusion.
 
 ## 6. Create Upload Package
 
-Prepare these files for the publisher portal:
+Use these files for the publisher portal:
 
 ```text
-Revised_Manuscript.docx
-Response_to_Reviewers.docx
-Highlights_or_Cover_Letter.docx, if required
-Editable figure files, if required
-High-resolution figure images
-Supplementary CSV or code archive, if allowed
+submission_ready/Revised_Manuscript.docx
+submission_ready/Response_to_Reviewers.docx
+submission_ready/Cover_Letter.docx
+submission_ready/figures/
+submission_ready/csv/
 ```
 
 Before upload:
@@ -113,6 +120,7 @@ Before upload:
 4. Confirm each reviewer comment is answered in the response letter.
 5. Confirm the manuscript and response letter use the same final result values.
 6. Confirm there are no placeholder values such as `TBD`, `XX`, or bracketed instructions.
+7. Enter at least one verified author ORCID in the portal. Do not use an unverified ORCID.
 
 ## 7. Portal Upload Steps
 

@@ -35,6 +35,10 @@ Thumbs.db
 # Generated experiment output
 results/
 
+# Local document QA artifacts
+submission_ready/rendered_qa*/
+work_manuscript_source.txt
+
 # Large datasets (GitHub's normal per-file limit is 100 MB)
 data/alibaba_trace/
 data/batch_task.tar.gz

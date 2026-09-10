@@ -1,0 +1,10 @@
+Submission package contents
+Revised_Manuscript.docx
+Response_to_Reviewers.docx
+Cover_Letter.docx
+Author_Metadata_and_Upload_Checklist.docx
+figures/
+csv/
+BIGAPI_Submission_Package.zip
+
+Final portal action still required: enter at least one verified author ORCID.

@@ -1,5 +1,7 @@
 # Response To Reviewers Draft
 
+This Markdown file is a working draft record. The upload-ready response file is `submission_ready/Response_to_Reviewers.docx`.
+
 Dear Editor and Reviewers,
 
 We thank the reviewers for their careful reading and constructive comments. We have revised the manuscript, experiments, and accompanying code to address the methodological and presentation concerns. The major changes include a revised six-objective fitness function, constrained nonnegative scheduling weights, a corrected Schedule Length Ratio definition, consistent MECT normalization constants, real Alibaba trace reruns, coefficient sensitivity analysis, robustness experiments across multiple workload settings, expanded result interpretation, and updated manuscript text for the abstract, conclusion, notation, and related work.
@@ -8,7 +10,7 @@ We thank the reviewers for their careful reading and constructive comments. We h
 
 **Comment 1. The authors should ask the help of native English-speaking proofreader, because there are some typo and linguistic mistakes that should be fixed.**
 
-Response: We agree. The revised manuscript should be proofread by a native English-speaking colleague or professional editing service before upload. We have also rewritten the abstract and conclusion drafts to improve clarity and technical precision.
+Response: We agree. The revised manuscript has been rewritten and edited throughout for clarity, grammar, and technical precision. If the journal requires a language editing certificate, the authors should attach the certificate from their chosen editing service.
 
 **Comment 2. Abstract to modify: the abstract should contain Objectives, Methods/Analysis, Findings, and Novelty/Improvement. It is suggested to present the abstract in one 200 words paragraph.**
 
@@ -16,7 +18,7 @@ Response: We revised the abstract as a single structured paragraph of approximat
 
 **Comment 3. The introduction is poorly written, and it does not properly refer to previously published studies.**
 
-Response: We will revise the introduction to better explain the literature gap: many prior schedulers optimize static or narrowly defined objectives, while fewer evaluate dynamic heterogeneous scheduling under trace-derived arrivals with sensitivity and robustness testing. We added recent 2025-2026 references to support this discussion.
+Response: The introduction has been revised to better explain the literature gap: many prior schedulers optimize static or narrowly defined objectives, while fewer evaluate dynamic heterogeneous scheduling under trace-derived arrivals with sensitivity and robustness testing. Recent 2025-2026 references have been added to support this discussion.
 
 **Comment 4. It is important to add some recent work (2025-2026) to the literature review. At least 5 new references should be added to the article.**
 
@@ -24,11 +26,11 @@ Response: We added six recent references from 2025-2026 covering metaheuristic e
 
 **Comment 5. The quality of the figures is not acceptable.**
 
-Response: Figures should be regenerated from `results/plots` after the final experiment run and exported at high resolution. The result-generation scripts now regenerate all comparison, convergence, weight, improvement, and radar plots.
+Response: Figures have been regenerated from `results/plots` after the final experiment run and included in the revised Word manuscript and `submission_ready/figures/`.
 
 **Comment 6. Much more explanations and interpretations should be added for the result.**
 
-Response: We expanded the result interpretation to focus on multi-metric trade-offs. In the real Alibaba trace run, optimized policies improve AvgCT by 14.59-21.27% and P95 by 4.06-13.79% relative to MECT in the main 1,000-task setting, but not all metrics improve under all robustness scenarios. We will report these trade-offs explicitly.
+Response: We expanded the result interpretation to focus on multi-metric trade-offs. In the real Alibaba trace run, optimized policies improve AvgCT by 14.59-21.27% and P95 by 4.06-13.79% relative to MECT in the main 1,000-task setting, but not all metrics improve under all robustness scenarios. These trade-offs are reported explicitly.
 
 **Comment 7. It is suggested to compare the results of the present study with previous studies and analyze their results completely.**
 
@@ -40,19 +42,19 @@ Response: We prepared a revised conclusion of approximately 301 words. It summar
 
 **Comment 9. All charts and figures must be clearly cited and referenced within the main text.**
 
-Response: We will cite each figure in the main text before or near its first appearance and add explanatory text after each figure.
+Response: Each figure is cited in the main text before or near its first appearance, with explanatory text added around the figure.
 
 **Comment 10. All symbols and parameters should be defined.**
 
-Response: We prepared a notation table defining all policy weights, queue variables, speed, latency, failure probability, completion time, P95, makespan, SLR, arrival window, and workload scale.
+Response: A notation table has been added defining policy weights, queue variables, speed, latency, failure probability, completion time, P95, makespan, SLR, arrival window, and workload scale.
 
 **Comment 11. The reference list should be formatted according to the journal's guidelines.**
 
-Response: We will renumber all references sequentially in the journal style and update in-text citations to the required `[1]`, `[2]` format.
+Response: References have been renumbered sequentially in `[1]`, `[2]` format.
 
 **Comment 12. The manuscript does not follow the format requested by the Journal.**
 
-Response: We will prepare the final article in the required Word template, include ORCID, verify captions/tables/references, and upload the Word version as requested by the technical editor.
+Response: The revised article has been prepared as a Word file with updated captions, tables, figures, notation, and references. At least one verified author ORCID must still be entered by the submitting author in the portal.
 
 ## Reviewer #3
 
@@ -99,12 +101,12 @@ Response: We added and ran `experiments/robustness_experiment.py` with repeated 
 
 **Please upload the Word version of the article.**
 
-Response: The final upload package must include `Revised_Manuscript.docx`. The editable manuscript source is still needed to create the journal-formatted Word file.
+Response: The final upload package includes `submission_ready/Revised_Manuscript.docx`.
 
 **Please add an ORCID for at least one author.**
 
-Response: We will add at least one author ORCID in the title page and submission metadata.
+Response: At least one verified author ORCID must be entered by the submitting author in the portal. This field cannot be invented.
 
 **Please address English revisions.**
 
-Response: We will complete professional/native English proofreading before final upload.
+Response: The manuscript has been rewritten and edited throughout for clarity. The authors should check the portal proof and attach a language editing certificate if the journal requires one.

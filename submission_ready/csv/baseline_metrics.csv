@@ -1,0 +1,4 @@
+,avg_completion_time,p95_latency,load_variance,failure_rate,throughput,makespan,slr_lower_bound,slr
+Round Robin,83.6827,483.4756,3.0222,0.022,0.7712,1296.7235,604.8529,2.1439
+Least Loaded,9.6688,21.5572,839.0222,0.008,1.59,628.9189,604.8529,1.0398
+MECT,12.0027,18.8956,1275.1556,0.009,1.6118,620.4255,604.8529,1.0257
